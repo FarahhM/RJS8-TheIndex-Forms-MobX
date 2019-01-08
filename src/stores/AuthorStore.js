@@ -10,6 +10,8 @@ class AuthorStore {
     this.authors = [];
     this.loading = true;
     this.query = "";
+
+    this.statusMessage = "";
   }
 
   fetchAuthors() {
@@ -21,6 +23,16 @@ class AuthorStore {
         this.loading = false;
       })
       .catch(err => console.error(err));
+  }
+  addAuthor(newAuthor) {
+    return instance
+      .post("https://the-index-api.herokuapp.com/api/authors/", newAuthor)
+      .then(res => res.data)
+      .then(data => this.authors.unshift(data))
+      .then(() => {
+        this.statusMessage = "Success";
+      })
+      .catch(err => (this.statusMessage = "Invalid Fields"));
   }
 
   get filteredAuthors() {

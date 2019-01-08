@@ -10,6 +10,7 @@ class BookStore {
     this.books = [];
     this.query = "";
     this.loading = true;
+    this.statusMessage = "";
   }
 
   fetchBooks() {
@@ -22,7 +23,18 @@ class BookStore {
       })
       .catch(err => console.error(err));
   }
-
+  addBook(newBook, authorID) {
+    newBook = { ...newBook, authors: [authorID] };
+    console.log(newBook);
+    return instance
+      .post("https://the-index-api.herokuapp.com/api/books/", newBook)
+      .then(res => res.data)
+      .then(data => this.books.unshift(data))
+      .then(() => {
+        this.statusMessage = "Success";
+      })
+      .catch(err => console.error(err.response.data));
+  }
   get filteredBooks() {
     return this.books.filter(book => {
       return book.title.toLowerCase().includes(this.query.toLowerCase());
